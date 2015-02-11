@@ -1,0 +1,99 @@
+function generateHtmlContentFromLatLong(lat, lon, waypointID) {
+    "use strict";
+    var htmlContent = "",
+        i,
+        c,
+        buttonID;
+
+    for (i = 0; i < lat.length; i += 1) {
+        c = lat.charAt(i);
+
+        buttonID = waypointID.toString() + "lat" + i.toString();
+        if (c === ".") {
+            htmlContent += "<input class='coordinateDigit'" +
+                " digit='" + c.toString() +
+                "' question=''" +
+                "' disabled type='checkbox' id='" +
+                buttonID +
+                "'/><label for='" +
+                buttonID +
+                "'>" +
+                c +
+                "</label>";
+        } else {
+            htmlContent += "<input class='coordinateDigit'" +
+                " digit='" + c.toString() +
+                "' question=''" +
+                " type='checkbox' id='" +
+                buttonID +
+                "'/><label for='" +
+                buttonID +
+                "'>" +
+                c +
+                "</label>";
+        }
+    }
+
+    htmlContent += "<br>";
+
+    for (i = 0; i < lon.length; i += 1) {
+        c = lon.charAt(i);
+        buttonID = waypointID.toString() + "lon" + i.toString();
+        if (c === ".") {
+            htmlContent += "<input class='coordinateDigit'" +
+                " digit='" + c.toString() +
+                "' question =''" +
+                " disabled type='checkbox' id='" +
+                buttonID +
+                "'/><label for='" +
+                buttonID +
+                "'>" +
+                c +
+                "</label>";
+        } else {
+            htmlContent += "<input class='coordinateDigit'" +
+                " digit='" + c.toString() +
+                "' question=''" +
+                " type='checkbox' id='" +
+                buttonID +
+                "'/><label for='" +
+                buttonID +
+                "'>" +
+                c +
+                "</label>";
+        }
+    }
+
+    return htmlContent;
+}
+
+function generateHtmlContentForWaypointDiv(lat, lang, waypointID, divID) {
+    "use strict";
+
+    $("#" + divID).html(generateHtmlContentFromLatLong(lat, lang, waypointID));
+    $("#" + divID).buttonset();
+    
+    $('.coordinateDigit').on('click', function () {
+        
+        if ($(this).attr("checked") === "checked") {   
+        $("#dialog-confirm").html("<p>Print your question for digit " + $(this).attr("digit") + ":</p><input type='text' id='question' value='" + $(this).attr("question") + "'/>");
+        
+        var digitObject = $(this).attr("id");
+        
+        $("#dialog-confirm").dialog({
+                        resizable: false,
+                        height: 250,
+                        modal: true,
+                        buttons: {
+                                "Save": function() {
+                                        $("#" + digitObject).attr("question", $("#question").val());
+                                        $(this).dialog( "close" );
+                                },
+                                Cancel: function() {
+                                        $(this).dialog( "close" );
+                                }
+                        }
+                });
+        }
+    });
+}

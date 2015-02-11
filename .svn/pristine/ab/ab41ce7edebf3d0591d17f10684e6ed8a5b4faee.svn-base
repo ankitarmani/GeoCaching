@@ -1,0 +1,57 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package UtilityClasses;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.servlet.ServletException;
+import javax.transaction.UserTransaction;
+
+/**
+ *
+ * @author Beatriz
+ */
+public final class DatabaseUtils {
+
+    /**
+     * Private constructor.
+     */
+    private DatabaseUtils() { }
+
+    /**
+     * Begins a transaction using utx because we are using JTA EM.
+     * @param emf
+     * @param utx
+     * @return
+     * @throws ServletException
+     */
+    public static EntityManager StartDBTransaction(
+    		EntityManagerFactory emf, UserTransaction utx)
+    				throws ServletException {
+        try {
+            utx.begin();
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+        EntityManager em = emf.createEntityManager();
+        return em;
+    }
+
+    /**
+     * Makes effective the change in the DB
+     * @param utx
+     * @param em
+     */
+    public static void EndDBTransaction(UserTransaction utx, EntityManager em) {
+        try {
+            utx.commit();
+        } catch (Exception ex) {
+            int i = 2;
+            i = 3;
+        } finally {
+            em.close();
+        }
+    }
+}
